@@ -1,0 +1,30 @@
+#!/usr/bin/with-contenv bash
+
+if [ -n "${PASSWORD}" ]; then
+  AUTH="password"
+else
+  AUTH="none"
+  echo "starting with no password"
+fi
+
+if [ -z ${PROXY_DOMAIN+x} ]; then
+  PROXY_DOMAIN_ARG=""
+else 
+  PROXY_DOMAIN_ARG="--proxy-domain=${PROXY_DOMAIN}"
+fi
+
+# Export env variables for the Home Assistant extension
+export HASS_SERVER="${HOMEASSISTANT_URL:-http://localhost:8123}"
+export HASS_TOKEN="${HOMEASSISTANT_TOKEN:-}"
+
+exec \
+	s6-setuidgid abc \
+		/usr/local/bin/code-server \
+			--bind-addr 0.0.0.0:8443 \
+			--user-data-dir /config/data \
+            --extra-builtin-extensions-dir /root/.code-server/extensions/
+			--extensions-dir /config/extensions \
+			--disable-telemetry \
+			--auth "${AUTH}" \
+			"${PROXY_DOMAIN_ARG}" \
+			/config/workspace

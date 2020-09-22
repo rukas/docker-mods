@@ -1,0 +1,81 @@
+#!/usr/bin/with-contenv bash
+
+apt-get update && apt-get install -y \
+    ack \
+    bsdtar \
+    build-essential \
+    colordiff \
+    git \
+    iputils-ping \
+    locales \
+    mariadb-client \
+    mosquitto-clients \
+    net-tools \
+    nmap \
+    openssh-client \
+    openssl \
+    wget \
+    uuid-runtime \
+    zsh
+
+sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+locale-gen
+
+mkdir -p /root/.code-server/extensions
+
+uuid=$(uuidgen)
+
+while read -r ext; do \
+    extension="${ext%%#*}" \
+    vendor="${extension%%.*}"; \
+    slug="${extension#*.}"; \
+    version="${ext##*#}"; \
+    \
+    echo "Installing vscode extension: ${slug} by ${vendor} @ ${version} "; \
+    \
+    echo "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${vendor}/vsextensions/${slug}/${version}/vspackage"; \
+    curl -JL --retry 5 -o "/tmp/${extension}-${version}.vsix" \
+        -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36" \
+        -H "x-market-user-id: ${uuid}" \
+        "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${vendor}/vsextensions/${slug}/${version}/vspackage"; \
+    mkdir -p "/root/.code-server/extensions/${extension}-${version}"; \
+    bsdtar --strip-components=1 -xf "/tmp/${extension}-${version}.vsix" \
+                -C "/root/.code-server/extensions/${extension}-${version}" extension; \
+    [ $? -ne 0 ] && exit 1; \
+    sleep 1; \
+done < /vscode.extensions
+
+ls -la /root/.code-server/extensions/
+
+curl -L -s -o /usr/bin/ha \
+        "https://github.com/home-assistant/cli/releases/download/4.4.1/ha_${ARCH}"
+
+chmod a+x /usr/bin/ha
+
+git clone --branch master --single-branch --depth 1 \
+        "git://github.com/robbyrussell/oh-my-zsh.git" ~/.oh-my-zsh
+
+git clone --branch master --single-branch --depth 1 \
+        "git://github.com/zsh-users/zsh-autosuggestions" \
+        ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+
+git clone --branch master --single-branch --depth 1 \
+        "git://github.com/zsh-users/zsh-syntax-highlighting.git" \
+        ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+
+sed -i -e "s#bin/bash#bin/zsh#" /etc/passwd
+
+update-alternatives --install /usr/bin/python python /usr/bin/python3 10
+
+pip3 install --no-cache-dir -r /requirements.txt
+
+apt-get purge -y --auto-remove \
+        bsdtar \
+        build-essential \
+        python3-dev \
+        uuid-runtime
+
+rm -fr \
+    /tmp/* \
+    /var/{cache,log}/* \
+    /var/lib/apt/lists/*
