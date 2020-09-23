@@ -1,0 +1,29 @@
+#!/usr/bin/with-contenv bash
+# ==============================================================================
+# Home Assistant Community Add-on: Visual Studio Code
+# Runs the code server
+# ==============================================================================
+declare -a options
+declare ha_config_path
+
+echo "Starting the code server..."
+
+ha_config_path="/ha_config"
+
+options+=(--port 1337)
+options+=(--user-data-dir "/config/vscode/data")
+options+=(--extra-builtin-extensions-dir "/root/.code-server/extensions/")
+options+=(--extensions-dir "/config/vscode/extensions")
+options+=(--host 0.0.0.0)
+options+=(--disable-telemetry)
+
+# Disable code authentication, we use HA authentication
+options+=(--auth none)
+
+# Export env variables for the Home Assistant extension
+export HASS_SERVER="${HOMEASSISTANT_URL:-http://localhost:8123}"
+export HASS_TOKEN="${HOMEASSISTANT_TOKEN:-}"
+
+# Run the code server
+cd "${ha_config_path}"
+exec s6-setuidgid abc /usr/local/bin/code-server "${options[@]}" "${ha_config_path}"

@@ -1,7 +1,7 @@
 #!/usr/bin/with-contenv bash
 
 MARKER_FILE=/.99-home-assistant
-if [ -f "$MARKER_FILE" ]; then
+if [ -f "${MARKER_FILE}" ]; then
     echo "home-assistant for code-server already installed"
     exit 0
 fi
@@ -51,7 +51,7 @@ while read -r ext; do \
                 -C "/root/.code-server/extensions/${extension}-${version}" extension; \
     [ $? -ne 0 ] && exit 1; \
     sleep 1; \
-done < /vscode.extensions
+done < /root/vscode.extensions
 
 ls -la /root/.code-server/extensions/
 
@@ -75,7 +75,7 @@ sed -i -e "s#bin/bash#bin/zsh#" /etc/passwd
 
 update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 
-pip3 install --no-cache-dir -r /requirements.txt
+pip3 install --no-cache-dir -r /tmp/requirements.txt
 
 apt-get purge -y --auto-remove \
         bsdtar \
