@@ -8,7 +8,7 @@ declare password
 declare port
 declare username
 
-if [[ -z "${MOSQUITTO_CONNECTION_STRING}"]]; then
+if [[ -z "${MOSQUITTO_CONNECTION_STRING}" ]]; then
     url=${MOSQUITTO_CONNECTION_STRING}
     # extract the user
     user="$(echo $url | grep @ | cut -d@ -f1)"
