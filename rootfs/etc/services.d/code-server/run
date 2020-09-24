@@ -10,7 +10,7 @@ echo "Starting the code server..."
 
 ha_config_path="/ha_config"
 
-options+=(--port 1337)
+options+=(--port 8443)
 options+=(--user-data-dir "/config/data")
 options+=(--extra-builtin-extensions-dir "/root/.code-server/extensions/")
 options+=(--extensions-dir "/config/extensions")
