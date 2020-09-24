@@ -21,16 +21,16 @@ readonly -a PREVIOUS_DEFAULT_CONFIG_HASHES=(
 while read -r ext; do
     extension="${ext%%#*}"
     # shellcheck disable=SC2086
-    rm -f -r /config/vscode/extensions/${extension,,}*
+    rm -f -r /config/extensions/${extension,,}*
 done < /root/vscode.extensions
 
 # Ensure user extensions folder exists
-mkdir -p /config/vscode/extensions
+mkdir -p /config/extensions
 
 # Sets up default user settings on first start.
-SETTINGS_FILE=/config/vscode/User/settings.json
+SETTINGS_FILE=/config/User/settings.json
 if [ ! -f "$SETTINGS_FILE" ]; then
-    mkdir -p /config/vscode/User
+    mkdir -p /config/User
     cp /root/.code-server/settings.json ${SETTINGS_FILE}
 fi
 
@@ -42,15 +42,15 @@ fi
 
 # Workaround workspace bug for code-server.
 # https://github.com/codercom/code-server/issues/121
-WORKSPACES_FILE=/config/vscode/Backups/workspaces.json
+WORKSPACES_FILE=/config/Backups/workspaces.json
 if [ ! -f "$WORKSPACES_FILE" ]; then
-    mkdir -p /config/vscode/Backups
+    mkdir -p /config/Backups
     cp /root/.code-server/workspaces.json ${WORKSPACES_FILE}
 fi
 
 # Workaround workspace bug for code-server (same as above, part 2).
 # https://github.com/codercom/code-server/issues/121
-WORKSPACE_STORAGE=/config/vscode/User/workspaceStorage
+WORKSPACE_STORAGE=/config/User/workspaceStorage
 if [ ! -d "$WORKSPACE_STORAGE" ]; then
     mkdir -p ${WORKSPACE_STORAGE}
 fi

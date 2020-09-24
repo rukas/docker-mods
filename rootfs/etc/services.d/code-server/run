@@ -11,9 +11,9 @@ echo "Starting the code server..."
 ha_config_path="/ha_config"
 
 options+=(--port 1337)
-options+=(--user-data-dir "/config/vscode/data")
+options+=(--user-data-dir "/config/data")
 options+=(--extra-builtin-extensions-dir "/root/.code-server/extensions/")
-options+=(--extensions-dir "/config/vscode/extensions")
+options+=(--extensions-dir "/config/extensions")
 options+=(--host 0.0.0.0)
 options+=(--disable-telemetry)
 
