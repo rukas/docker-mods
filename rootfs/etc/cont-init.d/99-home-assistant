@@ -75,7 +75,7 @@ sed -i -e "s#bin/bash#bin/zsh#" /etc/passwd
 
 update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 
-pip3 install --no-cache-dir -r /tmp/requirements.txt
+pip3 install --no-cache-dir -r /root/requirements.txt
 
 apt-get purge -y --auto-remove \
         bsdtar \
