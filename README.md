@@ -2,4 +2,4 @@
 
 This mod installs an instance of Mosquito that is pre-configured to connect with Home Assistant Core.
 
-In docker arguments, set an environment variable `DOCKER_MODS=stecky/mosquito-for-ha-core`
+In docker arguments, set an environment variable `DOCKER_MODS=stecky/mods:mosquito-for-ha-core`
