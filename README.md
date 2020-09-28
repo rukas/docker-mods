@@ -1,5 +1,5 @@
-# Home Assistant - Docker mod for code-server
+# Mosquito MQTT Broker for Home Assistant Core
 
-This mod adds Home Assistant related add-ons to code-server, to be installed/updated during container start.
+This mod installs an instance of Mosquito that is pre-configured to connect with Home Assistant Core.
 
-In code-server docker arguments, set an environment variable `DOCKER_MODS=linuxserver/mods:code-server-python3|stecky/code-server-home-assistant-mod`
+In docker arguments, set an environment variable `DOCKER_MODS=stecky/mosquito-for-ha-core`
