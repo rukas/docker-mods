@@ -1,0 +1,39 @@
+#!/usr/bin/with-contenv bash
+
+MARKER_FILE=/.99-mosquitto
+MOSQUITTO_AUTH_VERSION=0.1.4
+
+if [ -f "${MARKER_FILE}" ]; then
+    echo "mosquitto already installed"
+    exit 0
+fi
+
+apk add --no-cache \
+    curl \
+    mosquitto \
+    musl \
+    openssl \
+    pwgen \
+    socat
+
+apk add --no-cache --virtual .build-dependencies \
+    build-base \
+    curl-dev \
+    git \
+    mosquitto-dev \
+    openssl-dev
+
+cd /usr/src
+git clone --depth 1 -b "${MOSQUITTO_AUTH_VERSION}" https://github.com/pvizeli/mosquitto-auth-plug
+cd mosquitto-auth-plug
+cp config.mk.in config.mk
+make
+mkdir -p /usr/share/mosquitto
+cp -f auth-plug.so /usr/share/mosquitto
+
+apk del .build-dependencies
+rm -fr /usr/src/mosquitto-auth-plug
+
+cp -f /etc/mosquitto.conf /config
+
+touch ${MARKER_FILE}
