@@ -11,7 +11,7 @@ services:
 
 env:
   global:
-    - DOCKERHUB="linuxserver/mods"
+    - DOCKERHUB="stecky/mods"
     - BASEIMAGE="code-server"
     - MODNAME="home-assistant"
 
