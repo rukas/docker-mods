@@ -2,7 +2,7 @@
 
 MARKER_FILE=/.99-home-assistant
 if [ -f "${MARKER_FILE}" ]; then
-    echo "home-assistant for code-server already installed"
+    echo "home-assistant mod already installed"
     exit 0
 fi
 
