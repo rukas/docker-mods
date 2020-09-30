@@ -11,7 +11,7 @@ services:
 
 env:
   global:
-    - DOCKERHUB="linuxserver/mods" #don't modify
+    - DOCKERHUB="stecky/mods" #don't modify
     - BASEIMAGE="alpine" #replace
     - MODNAME="nodejs" #replace
 
