@@ -15,9 +15,9 @@ Again, when pulling in logic from external sources practice caution and trust th
 
 ## LinuxServer.io Hosted Mods
 
-We host and publish official Mods at the [linuxserver/mods](https://hub.docker.com/r/linuxserver/mods/tags) endpoint as separate tags. Each tag is in the format of `<imagename>-<modname>` for the latest versions, and `<imagename>-<modname>-<commitsha>` for the specific versions.
+We host and publish official Mods at the [stecky/mods](https://hub.docker.com/r/stecky/mods/tags) endpoint as separate tags. Each tag is in the format of `<imagename>-<modname>` for the latest versions, and `<imagename>-<modname>-<commitsha>` for the specific versions.
 
-Here's a list of the official Mods we host: https://github.com/linuxserver/docker-mods/blob/master/mod-list.yml 
+Here's a list of the official Mods we host: https://github.com/stecky/docker-mods/blob/master/mod-list.yml 
 
 ## Using a Docker Mod
 
