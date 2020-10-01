@@ -4,7 +4,7 @@ language: shell
 
 branches:
   only:
-    - <baseimagename>-<modname> #replace variables, omit brackets
+    - node-red-home-assistant-add-ons
 
 services:
   - docker
@@ -12,8 +12,8 @@ services:
 env:
   global:
     - DOCKERHUB="stecky/mods" #don't modify
-    - BASEIMAGE="baseimagename" #replace
-    - MODNAME="modname" #replace
+    - BASEIMAGE="node-red" #replace
+    - MODNAME="home-assistant-add-ons" #replace
 
 jobs:
   include:
