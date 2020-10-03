@@ -4,7 +4,7 @@ language: shell
 
 branches:
   only:
-    - node-red-home-assistant-add-ons
+    - node-red-home-assistant
 
 services:
   - docker
@@ -13,7 +13,7 @@ env:
   global:
     - DOCKERHUB="stecky/mods" #don't modify
     - BASEIMAGE="node-red" #replace
-    - MODNAME="home-assistant-add-ons" #replace
+    - MODNAME="home-assistant" #replace
 
 jobs:
   include:
