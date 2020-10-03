@@ -1,0 +1,54 @@
+#!/usr/bin/with-contenv bash
+# ==============================================================================
+# Node-RED for Home Assistant Core
+# Configures mqtt broker before running
+# ==============================================================================
+
+# Check to see if mqtt broker has already been defined
+jq -e '[ .[] | select(.type=="mqtt-broker")]' /config/flows.json | grep "\[\]" &> /dev/null
+if [ $? == 0 ]; then
+    echo "mqtt-broker already defined"
+else
+    # Do we have all of the environment variables that we need?
+    if [[ -z "${MQTT_HOST}" ]]; then
+        echo "MQTT_HOST=${MQTT_HOST}"
+    else
+        echo "Missing variable MQTT_HOST"
+        exit 0
+    fi
+    if [[ -z "${MQTT_PORT}" ]]; then
+        echo "MQTT_PORT=${MQTT_PORT}"
+    else
+        echo "Missing variable MQTT_PORT"
+        exit 0
+    fi
+    if [[ -z "${MQTT_USERNAME}" ]]; then
+        echo "MQTT_USERNAME=${MQTT_USERNAME}"
+    else
+        echo "Missing variable MQTT_USERNAME"
+        exit 0
+    fi
+    if [[ -z "${MQTT_PASSWORD}" ]]; then
+        echo "MQTT_PASSWORD=${MQTT_PASSWORD}"
+    else
+        echo "Missing variable MQTT_PASSWORD"
+        exit 0
+    fi
+
+    # Create random flow id
+    id=$(node -e "console.log((1+Math.random()*4294967295).toString(16));")
+
+    # Inject mqtt connection info
+    json_string=$( jq -n \
+                        --arg id "${id}" \
+                        --arg host "${MQTT_HOST}" \
+                        --arg port "${MQTT_PORT}" \
+                        --arg user "${MQTT_USERNAME}" \
+                        --arg pass "${MQTT_PASSWORD}" \
+                        '{"id":$id,"type":"mqtt-broker","z":"","name":"MQTT Broker","broker":$host,"port":$port,"clientid":"","credentials": {"user": $user,"password": $pass},"usetls":false,"compatmode":false,"keepalive":"60","cleansession":true,"birthTopic":"","birthQos":"0","birthPayload":"","closeTopic":"","closeQos":"0","closePayload":"","willTopic":"","willQos":"0","willPayload":""}' )
+
+    jq -c \
+        --arg mqttelement "${json_string}" \
+        '. += $mqttelement' /config/flows.json > flows.mqtt
+    mv flows.mqtt /config/flows.json
+fi
