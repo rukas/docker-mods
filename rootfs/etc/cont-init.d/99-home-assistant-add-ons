@@ -27,13 +27,6 @@ sed -i "s/%%ID%%/${id}/" "/data/flows.json"
 sed -i "s~%%URL%%~${HOMEASSISTANT_URL}~" "/data/flows.json"
 sed -i "s/%%PASS%%/${HOMEASSISTANT_TOKEN}/" "/data/flows.json"
 
-# Patch Node-RED Dashboard
-cd /usr/src/root/node_modules/node-red-dashboard
-patch -p1 < /etc/node-red/patches/node-red-dashboard-show-dashboard.patch
-
-# Inject Node-RED port
-sed -i "s/%%PORT%%/${TCP_PORT_1880:-1880}/" "/usr/src/root/node_modules/node-red-dashboard/nodes/ui_base.html"
-
 # Ensures conflicting Node-RED packages are absent
 cd /data
 if [ -f "/data/package.json" ]; then
