@@ -5,7 +5,7 @@ FROM node:10-alpine as buildstage
 WORKDIR /usr/src/root
 
 # copy local files
-COPY root/ /root-layer/
+COPY rootfs/ /root-layer/
 
 RUN \
 	echo "**** install packages ****" && \
