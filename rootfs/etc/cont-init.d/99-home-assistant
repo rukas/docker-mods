@@ -10,6 +10,9 @@ fi
 
 set +u
 
+HOMEASSISTANT_PW=
+ADDONS_PW=
+
 SYSTEM_USER=/mosquitto/data/system_user.json
 
 function write_system_users() {
