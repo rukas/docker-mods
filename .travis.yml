@@ -12,8 +12,8 @@ services:
 env:
   global:
     - DOCKERHUB="stecky/mods"
-    - BASEIMAGE="alpine"
-    - MODNAME="mosquitto"
+    - BASEIMAGE="mosquitto"
+    - MODNAME="home-assistant"
 
 jobs:
   include:
