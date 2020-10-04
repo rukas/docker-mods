@@ -72,7 +72,7 @@ if [ ! -e "${SYSTEM_USER}" ]; then
     HOMEASSISTANT_PW="$(pwgen 64 1)"
     ADDONS_PW="$(pwgen 64 1)"
 
-    bashio::log.info "Initialize system configuration."
+    echo "Initialize system configuration."
     write_system_users
 else
     HOMEASSISTANT_PW=$(jq --raw-output '.homeassistant.password' $SYSTEM_USER)
