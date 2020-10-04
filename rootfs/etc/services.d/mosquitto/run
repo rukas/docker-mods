@@ -1,3 +1,14 @@
 #!/usr/bin/with-contenv bash
+# ==============================================================================
+# Mosquitto MQTT Broker
+# Starts Mosquitto
+# ==============================================================================
 
-sshuttle --dns --remote root@${HOST}:${PORT} 0/0 -x 172.17.0.0/16
+echo "Starting Mosquitto..."
+
+# Start Auth Server
+socat TCP-LISTEN:8080,fork,reuseaddr SYSTEM:/bin/auth_srv.sh &
+WAIT_PIDS+=($!)
+
+cd /usr/sbin
+exec mosquitto -c /mosquitto/config/mosquitto.conf

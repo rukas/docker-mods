@@ -4,7 +4,7 @@ language: shell
 
 branches:
   only:
-    - alpine-mosquitto
+    - mosquitto-home-assistant
 
 services:
   - docker
