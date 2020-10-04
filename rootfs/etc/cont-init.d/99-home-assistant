@@ -1,6 +1,6 @@
 #!/usr/bin/with-contenv bash
 
-MARKER_FILE=/.99-mosquitto
+MARKER_FILE=/mosquitto/config/.99-mosquitto
 MOSQUITTO_AUTH_VERSION=0.1.4
 
 if [ -f "${MARKER_FILE}" ]; then
