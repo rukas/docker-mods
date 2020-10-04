@@ -30,9 +30,6 @@ function call_homeassistant() {
     token="Authorization: Bearer ${HOMEASSISTANT_TOKEN}"
     url="${HOMEASSISTANT_URL}/${path}"
 
-    echo "token: ${token}"
-    echo "Calling the Home Assistant API at: ${url}"
-
     # Call API
     if [ -n "${data}" ]; then
         curl -f -s -X "${method}" -d "${data}" -H "${token}" "${url}"
