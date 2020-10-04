@@ -83,7 +83,7 @@ else
 fi
 
 # Initialize Service
-if call_homeassistant GET "services/mqtt" | jq --raw-output ".data.host" | grep -v "$(hostname)" > /dev/null; then
+if call_homeassistant GET "/api/services/mqtt" | jq --raw-output ".data.host" | grep -v "$(hostname)" > /dev/null; then
     echo "There is already an MQTT service running!"
 else
     echo "Initialize Home Assistant Add-on services"
@@ -92,7 +92,7 @@ else
     fi
 
     echo "Initialize Home Assistant discovery"
-    if ! call_homeassistant POST "discovery" "$(constrain_discovery homeassistant "${HOMEASSISTANT_PW}")" > /dev/null; then
+    if ! call_homeassistant POST "/api/discovery" "$(constrain_discovery homeassistant "${HOMEASSISTANT_PW}")" > /dev/null; then
         echo "Can't setup Home Assistant discovery mqtt"
     fi
 fi
