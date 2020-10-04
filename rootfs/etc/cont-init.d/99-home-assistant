@@ -30,6 +30,7 @@ function call_homeassistant() {
     token="Authorization: Bearer ${HOMEASSISTANT_TOKEN}"
     url="${HOMEASSISTANT_URL}/${path}"
 
+    echo "token: ${token}"
     echo "Calling the Home Assistant API at: ${url}"
 
     # Call API
