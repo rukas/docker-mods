@@ -88,8 +88,5 @@ fi
 
 echo "Starting Mosquitto..."
 
- &
-WAIT_PIDS+=($!)
-
 cd /usr/sbin
 exec mosquitto -c /app/config/mosquitto.conf

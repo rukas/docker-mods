@@ -2,6 +2,9 @@
 
 set +u
 
+CONFIG_PATH=/app/options.json
+MOSQUITTO_CONF=/app/config/mosquitto.conf
+
 if [ ! -f "${CONFIG_PATH}" ]; then
     cp /etc/mosquitto/options.json ${CONFIG_PATH}
 fi
@@ -10,10 +13,7 @@ if [ ! -f "${MOSQUITTO_CONF}" ]; then
     cp /etc/mosquitto/mosquitto.conf ${MOSQUITTO_CONF}
 fi
 
-CONFIG_PATH=/app/options.json
-
 AUTH_SRV_PATH=/bin/auth_srv.sh
-MOSQUITTO_CONF=/app/config/mosquitto.conf
 
 LOGINS=$(jq --raw-output ".logins | length" $CONFIG_PATH)
 ANONYMOUS=$(jq --raw-output ".anonymous" $CONFIG_PATH)
