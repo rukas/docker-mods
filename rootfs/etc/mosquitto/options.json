@@ -1,0 +1,8 @@
+{
+    "logins": [],
+    "anonymous": false,
+    "certfile": "fullchain.pem",
+    "keyfile": "privkey.pem",
+    "require_certificate": false,
+    "debug_logging": true
+}

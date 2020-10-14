@@ -1,103 +1,63 @@
 #!/usr/bin/with-contenv bash
 
-MARKER_FILE=/mosquitto/config/.99-mosquitto
-MOSQUITTO_AUTH_VERSION=0.1.4
-
-if [ -f "${MARKER_FILE}" ]; then
-    echo "mosquitto broker already configured"
-    exit 0
-fi
-
 set +u
 
-HOMEASSISTANT_PW=
-ADDONS_PW=
+if [ ! -f "${CONFIG_PATH}" ]; then
+    cp /etc/mosquitto/options.json ${CONFIG_PATH}
+fi
 
-SYSTEM_USER=/mosquitto/data/system_user.json
+if [ ! -f "${MOSQUITTO_CONF}" ]; then
+    cp /etc/mosquitto/mosquitto.conf ${MOSQUITTO_CONF}
+fi
 
-function write_system_users() {
-    (
-        echo "{\"homeassistant\": {\"password\": \"$HOMEASSISTANT_PW\"}, \"addons\": {\"password\": \"$ADDONS_PW\"}}"
-    ) > "${SYSTEM_USER}"
-}
+CONFIG_PATH=/app/options.json
 
-function call_homeassistant() {
-    local method=$1
-    local path=$2
-    local data="${3}"
-    local token=
+AUTH_SRV_PATH=/bin/auth_srv.sh
+MOSQUITTO_CONF=/app/config/mosquitto.conf
 
-    token="Authorization: Bearer ${HOMEASSISTANT_TOKEN}"
-    url="${HOMEASSISTANT_URL}/${path}"
+LOGINS=$(jq --raw-output ".logins | length" $CONFIG_PATH)
+ANONYMOUS=$(jq --raw-output ".anonymous" $CONFIG_PATH)
+KEYFILE=$(jq --raw-output ".keyfile" $CONFIG_PATH)
+CERTFILE=$(jq --raw-output ".certfile" $CONFIG_PATH)
+CAFILE=$(jq --raw-output --exit-status ".cafile | select (.!=null)" $CONFIG_PATH || echo "$CERTFILE")
+REQUIRE_CERTIFICATE=$(jq --raw-output ".require_certificate" $CONFIG_PATH)
+CUSTOMIZE_ACTIVE=$(jq --raw-output ".customize.active" $CONFIG_PATH)
+DEBUG_LOGGING=$(jq --raw-output ".debug_logging" $CONFIG_PATH)
 
-    # Call API
-    if [ -n "${data}" ]; then
-        curl -f -s -X "${method}" -d "${data}" -H "${token}" "${url}"
-    else
-        curl -f -s -X "${method}" -H "${token}" "${url}"
-    fi
-
-    return $?
-}
-
-function constrain_host_config() {
-    local user=$1
-    local password=$2
-
-    echo "{"
-    echo "  \"host\": \"$(hostname)\","
-    echo "  \"port\": 1883,"
-    echo "  \"ssl\": false,"
-    echo "  \"protocol\": \"3.1.1\","
-    echo "  \"username\": \"${user}\","
-    echo "  \"password\": \"${password}\""
-    echo "}"
-}
-
-function constrain_discovery() {
-    local user=$1
-    local password=$2
-    local config=
-
-    config="$(constrain_host_config "${user}" "${password}")"
-    echo "{"
-    echo "  \"service\": \"mqtt\","
-    echo "  \"config\": ${config}"
-    echo "}"
-}
+SSL_CONFIG="
+listener 8883
+protocol mqtt
+cafile /ssl/$CAFILE
+certfile /ssl/$CERTFILE
+keyfile /ssl/$KEYFILE
+require_certificate $REQUIRE_CERTIFICATE
+listener 8884
+protocol websockets
+cafile /ssl/$CAFILE
+certfile /ssl/$CERTFILE
+keyfile /ssl/$KEYFILE
+require_certificate $REQUIRE_CERTIFICATE
+"
 
 ## Main ##
 
 echo "Setup mosquitto configuration"
 
-# Prepare System Accounts
-if [ ! -e "${SYSTEM_USER}" ]; then
-    HOMEASSISTANT_PW="$(pwgen 64 1)"
-    ADDONS_PW="$(pwgen 64 1)"
+sed -i "s/%%ANONYMOUS%%/$ANONYMOUS/g" ${MOSQUITTO_CONF}
+sed -i "s/%%AUTH_QUIET_LOGS%%/$DEBUG_LOGGING/g" ${MOSQUITTO_CONF}
 
-    echo "Initialize system configuration."
-    write_system_users
+# Enable SSL if exists configs
+if [ -e "/ssl/$CAFILE" ] && [ -e "/ssl/$CERTFILE" ] && [ -e "/ssl/$KEYFILE" ]; then
+    echo "$SSL_CONFIG" >> ${MOSQUITTO_CONF}
 else
-    HOMEASSISTANT_PW=$(jq --raw-output '.homeassistant.password' $SYSTEM_USER)
-    ADDONS_PW=$(jq --raw-output '.addons.password' $SYSTEM_USER)
+    echo "SSL not enabled - No valid certs found!"
 fi
 
-# Initialize Service
-if call_homeassistant GET "/api/services/mqtt" | jq --raw-output ".data.host" | grep -v "$(hostname)" > /dev/null; then
-    echo "There is already an MQTT service running!"
+# Handle local users
+if [ "$LOGINS" -gt "0" ]; then
+    echo "Found local users inside config"
 else
-    echo "Initialize Home Assistant Add-on services"
-    if ! call_homeassistant POST "services/mqtt" "$(constrain_host_config addons "${ADDONS_PW}")" > /dev/null; then
-        echo "Can't setup Home Assistant service mqtt"
-    fi
-
-    echo "Initialize Home Assistant discovery"
-    if ! call_homeassistant POST "/api/discovery" "$(constrain_discovery homeassistant "${HOMEASSISTANT_PW}")" > /dev/null; then
-        echo "Can't setup Home Assistant discovery mqtt"
-    fi
+    echo "No local user available"
 fi
 
-cp /etc/mosquitto/auth_srv.sh /bin/auth_srv.sh
-chmod +x /bin/auth_srv.sh
-
-touch ${MARKER_FILE}
+chmod +x ${AUTH_SRV_PATH}

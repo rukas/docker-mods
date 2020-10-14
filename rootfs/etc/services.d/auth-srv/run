@@ -1,0 +1,8 @@
+#!/usr/bin/with-contenv bash
+# ==============================================================================
+# Mosquitto MQTT Broker
+# Starts the auth server
+# ==============================================================================
+
+# Start Auth Server
+socat TCP-LISTEN:8080,fork,reuseaddr SYSTEM:/bin/auth_srv.sh
