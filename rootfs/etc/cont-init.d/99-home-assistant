@@ -4,6 +4,7 @@ set +u
 
 CONFIG_PATH=/app/options.json
 MOSQUITTO_CONF=/app/config/mosquitto.conf
+SYSTEM_USER=/app/data/system_user.json
 
 if [ ! -f "${CONFIG_PATH}" ]; then
     cp /etc/mosquitto/options.json ${CONFIG_PATH}
@@ -23,6 +24,8 @@ CAFILE=$(jq --raw-output --exit-status ".cafile | select (.!=null)" $CONFIG_PATH
 REQUIRE_CERTIFICATE=$(jq --raw-output ".require_certificate" $CONFIG_PATH)
 CUSTOMIZE_ACTIVE=$(jq --raw-output ".customize.active" $CONFIG_PATH)
 LOGGING=$(jq --raw-output ".logging" $CONFIG_PATH)
+HOMEASSISTANT_PW=
+ADDONS_PW=
 
 SSL_CONFIG="
 listener 8883
@@ -40,6 +43,18 @@ require_certificate $REQUIRE_CERTIFICATE
 "
 
 ## Main ##
+
+# Prepare System Accounts
+if [ ! -e "${SYSTEM_USER}" ]; then
+    HOMEASSISTANT_PW="$(pwgen 64 1)"
+    ADDONS_PW="$(pwgen 64 1)"
+
+    echo "Initialize system configuration."
+    write_system_users
+else
+    HOMEASSISTANT_PW=$(jq --raw-output '.homeassistant.password' $SYSTEM_USER)
+    ADDONS_PW=$(jq --raw-output '.addons.password' $SYSTEM_USER)
+fi
 
 echo "Setup mosquitto configuration"
 

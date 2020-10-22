@@ -2,8 +2,7 @@
 # shellcheck disable=SC2244,SC1117
 set -e
 
-CONFIG_PATH=/app/
-SYSTEM_USER=/mosquitto/data/system_user.json
+SYSTEM_USER=/app/data/system_user.json
 REQUEST=()
 REQUEST_BODY=""
 
