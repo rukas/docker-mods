@@ -22,7 +22,7 @@ CERTFILE=$(jq --raw-output ".certfile" $CONFIG_PATH)
 CAFILE=$(jq --raw-output --exit-status ".cafile | select (.!=null)" $CONFIG_PATH || echo "$CERTFILE")
 REQUIRE_CERTIFICATE=$(jq --raw-output ".require_certificate" $CONFIG_PATH)
 CUSTOMIZE_ACTIVE=$(jq --raw-output ".customize.active" $CONFIG_PATH)
-DEBUG_LOGGING=$(jq --raw-output ".debug_logging" $CONFIG_PATH)
+LOGGING=$(jq --raw-output ".logging" $CONFIG_PATH)
 
 SSL_CONFIG="
 listener 8883
@@ -44,7 +44,12 @@ require_certificate $REQUIRE_CERTIFICATE
 echo "Setup mosquitto configuration"
 
 sed -i "s/%%ANONYMOUS%%/$ANONYMOUS/g" ${MOSQUITTO_CONF}
-sed -i "s/%%AUTH_QUIET_LOGS%%/$DEBUG_LOGGING/g" ${MOSQUITTO_CONF}
+
+if [ "${LOGGING}" == "debug" ]; then
+    sed -i "s/%%AUTH_QUIET_LOGS%%/false/g" /etc/mosquitto.conf
+else
+    sed -i "s/%%AUTH_QUIET_LOGS%%/true/g" /etc/mosquitto.conf
+fi
 
 # Enable SSL if exists configs
 if [ -e "/ssl/$CAFILE" ] && [ -e "/ssl/$CERTFILE" ] && [ -e "/ssl/$KEYFILE" ]; then
