@@ -5,14 +5,14 @@
 # ==============================================================================
 
 # Ensure configuration files exist
-FILE=/config/flows.json
+FILE=/app/flows.json
 if [ -f "$FILE" ]; then
     echo "$FILE exists."
 else
     echo "[]" >> $FILE
 fi
 
-FILE=/config/settings.js
+FILE=/app/settings.js
 if [ -f "$FILE" ]; then
     echo "$FILE exists."
 else
@@ -20,7 +20,7 @@ else
 fi
 
 # Check to see if the home assistant server has already been defined
-jq -e '[ .[] | select(.name=="Home Assistant")]' /config/flows.json | grep "\[\]" &> /dev/null
+jq -e '[ .[] | select(.name=="Home Assistant")]' /app/flows.json | grep "\[\]" &> /dev/null
 if [ $? == 0 ]; then
     echo "home assistant server already defined"
 else
@@ -36,13 +36,13 @@ else
 
     jq -c \
         --arg haelement "${json_string}" \
-        '. += $haelement' /config/flows.json > flows.ha
-    mv flows.ha /config/flows.json
+        '. += $haelement' /app/flows.json > flows.ha
+    mv flows.ha /app/flows.json
 fi
 
 # Ensures conflicting Node-RED packages are absent
-cd /config
-if [ -f "/config/package.json" ]; then
+cd /app
+if [ -f "/app/package.json" ]; then
     npm uninstall \
         node-red-contrib-home-assistant \
         node-red-contrib-home-assistant-llat \
