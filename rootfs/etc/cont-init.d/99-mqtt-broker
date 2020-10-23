@@ -5,7 +5,7 @@
 # ==============================================================================
 
 # Check to see if mqtt broker has already been defined
-jq -e '[ .[] | select(.type=="mqtt-broker")]' /app/flows.json | grep "\[\]" &> /dev/null
+jq -e '[ .[] | select(.type=="mqtt-broker")]' /config/flows.json | grep "\[\]" &> /dev/null
 if [ $? == 0 ]; then
     echo "mqtt-broker already defined"
 else
@@ -49,6 +49,6 @@ else
 
     jq -c \
         --arg mqttelement "${json_string}" \
-        '. += $mqttelement' /app/flows.json > flows.mqtt
-    mv flows.mqtt /app/flows.json
+        '. += $mqttelement' /config/flows.json > flows.mqtt
+    mv flows.mqtt /config/flows.json
 fi
