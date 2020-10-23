@@ -45,7 +45,7 @@ else
                         --arg port "${MQTT_PORT}" \
                         --arg user "${MQTT_USERNAME}" \
                         --arg pass "${MQTT_PASSWORD}" \
-                        '{"id":$id,"type":"mqtt-broker","z":"","name":"MQTT Broker","broker":$host,"port":$port,"clientid":"","credentials": {"user": $user,"password": $pass},"usetls":false,"compatmode":false,"keepalive":"60","cleansession":true,"birthTopic":"","birthQos":"0","birthPayload":"","closeTopic":"","closeQos":"0","closePayload":"","willTopic":"","willQos":"0","willPayload":""}' )
+                        '[{"id":$id,"type":"mqtt-broker","z":"","name":"MQTT Broker","broker":$host,"port":$port,"clientid":"","credentials": {"user": $user,"password": $pass},"usetls":false,"compatmode":false,"keepalive":"60","cleansession":true,"birthTopic":"","birthQos":"0","birthPayload":"","closeTopic":"","closeQos":"0","closePayload":"","willTopic":"","willQos":"0","willPayload":""}]')
 
     jq -c \
         --argjson mqttelement "${json_string}" \
