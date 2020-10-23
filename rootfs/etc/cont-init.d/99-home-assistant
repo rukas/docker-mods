@@ -39,7 +39,7 @@ else
 
     jq -c \
         --arg haelement "${json_string}" \
-        '. += $haelement' /config/flows.json > flows.ha
+        '.[] += $haelement' /config/flows.json > flows.ha
     mv flows.ha /config/flows.json
 fi
 

@@ -52,6 +52,6 @@ else
 
     jq -c \
         --arg mqttelement "${json_string}" \
-        '. += $mqttelement' /config/flows.json > flows.mqtt
+        '.[] += $mqttelement' /config/flows.json > flows.mqtt
     mv flows.mqtt /config/flows.json
 fi
