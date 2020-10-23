@@ -19,6 +19,9 @@ else
     cp /etc/node-red/settings.js $FILE
 fi
 
+# Check to see if the flows file is empty and add an empty array if so
+[ -s /config/flows.json ] || echo "[]" > /config/flows.json
+
 # Check to see if the home assistant server has already been defined
 jq -e '[ .[] | select(.name=="Home Assistant")]' /config/flows.json | grep "\[\]" &> /dev/null
 if [ $? == 1 ]; then
