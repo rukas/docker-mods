@@ -20,7 +20,7 @@ else
 fi
 
 # Check to see if the flows file is empty and add an empty array if so
-[ -s /config/flows.json ] || echo "[]" > /config/flows.json
+[ -s /config/flows.json ] || jq -n .[] > /config/flows.json
 
 # Check to see if the home assistant server has already been defined
 jq -e '[ .[] | select(.name=="Home Assistant")]' /config/flows.json | grep "\[\]" &> /dev/null
@@ -38,8 +38,8 @@ else
                         '[{"id":$id,"type":"server","z":"","name":"Home Assistant","addon":false,"url":$url,"pass":$token}]')
 
     jq -c \
-        --arg haelement "${json_string}" \
-        '.[] += $haelement' /config/flows.json > flows.ha
+        --argjson haelement "${json_string}" \
+        '. += $haelement' /config/flows.json > flows.ha
     mv flows.ha /config/flows.json
 fi
 
