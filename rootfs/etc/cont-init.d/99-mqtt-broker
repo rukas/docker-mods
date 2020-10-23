@@ -6,7 +6,7 @@
 
 # Check to see if mqtt broker has already been defined
 jq -e '[ .[] | select(.type=="mqtt-broker")]' /config/flows.json | grep "\[\]" &> /dev/null
-if [ $? == 0 ]; then
+if [ $? == 1 ]; then
     echo "mqtt-broker already defined"
 else
     # Do we have all of the environment variables that we need?

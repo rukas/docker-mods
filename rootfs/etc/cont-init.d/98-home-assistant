@@ -21,7 +21,7 @@ fi
 
 # Check to see if the home assistant server has already been defined
 jq -e '[ .[] | select(.name=="Home Assistant")]' /config/flows.json | grep "\[\]" &> /dev/null
-if [ $? == 0 ]; then
+if [ $? == 1 ]; then
     echo "home assistant server already defined"
 else
     # Create random flow id
