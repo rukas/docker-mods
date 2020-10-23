@@ -14,29 +14,26 @@ if [ $? == 1 ]; then
 else
     # Do we have all of the environment variables that we need?
     if [[ -z "${MQTT_HOST}" ]]; then
-        echo "MQTT_HOST=${MQTT_HOST}"
-    else
         echo "Missing variable MQTT_HOST"
         exit 0
     fi
     if [[ -z "${MQTT_PORT}" ]]; then
-        echo "MQTT_PORT=${MQTT_PORT}"
-    else
         echo "Missing variable MQTT_PORT"
         exit 0
     fi
     if [[ -z "${MQTT_USERNAME}" ]]; then
-        echo "MQTT_USERNAME=${MQTT_USERNAME}"
-    else
         echo "Missing variable MQTT_USERNAME"
         exit 0
     fi
     if [[ -z "${MQTT_PASSWORD}" ]]; then
-        echo "MQTT_PASSWORD=${MQTT_PASSWORD}"
-    else
         echo "Missing variable MQTT_PASSWORD"
         exit 0
     fi
+
+    echo "MQTT_HOST=${MQTT_HOST}"
+    echo "MQTT_PORT=${MQTT_PORT}"
+    echo "MQTT_USERNAME=${MQTT_USERNAME}"
+    echo "MQTT_PASSWORD=${MQTT_PASSWORD}"
 
     # Create random flow id
     id=$(node -e "console.log((1+Math.random()*4294967295).toString(16));")
