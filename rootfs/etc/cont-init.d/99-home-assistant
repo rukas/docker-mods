@@ -42,6 +42,12 @@ keyfile /ssl/$KEYFILE
 require_certificate $REQUIRE_CERTIFICATE
 "
 
+function write_system_users() {
+    (
+        echo "{\"homeassistant\": {\"password\": \"$HOMEASSISTANT_PW\"}, \"addons\": {\"password\": \"$ADDONS_PW\"}}"
+    ) > "${SYSTEM_USER}"
+}
+
 ## Main ##
 
 # Prepare System Accounts
