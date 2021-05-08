@@ -1,11 +1,5 @@
 #!/usr/bin/with-contenv bash
 
-MARKER_FILE=/.99-home-assistant
-if [ -f "${MARKER_FILE}" ]; then
-    echo "home-assistant mod already installed"
-    exit 0
-fi
-
 apt-get update && apt-get install -y \
     ack \
     bsdtar \
@@ -87,5 +81,3 @@ rm -fr \
     /tmp/* \
     /var/{cache,log}/* \
     /var/lib/apt/lists/*
-
-touch ${MARKER_FILE}
